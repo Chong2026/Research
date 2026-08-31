@@ -1,0 +1,99 @@
+Total ONCA cases mentioning one per cent rule: 29
+
+2026 ONCA 296 -- Hussein v. Qazi 2026
+2024 ONCA 101 -- Ontario English Catholic Teachers Association v. Ontario (Attorney General) 2024
+2022 ONCA 820 -- Hybrid Financial Ltd. v. Flow Capital Corp. 2022
+2021 ONCA 201 -- Fram Elgin Mills 90 Inc. v. Romandale Farms Limited 2021
+2019 ONCA 963 -- Armstrong v. Royal Victoria Hospital 2019
+2017 ONCA 922 -- Parent v. Janandee Management Inc. 2017
+2017 ONCA 717 -- Cobb v. Long Estate 2017
+2014 ONCA 920 -- Sidhu v. State Farm Mutual Automobile Insurance Company 2014
+2013 ONCA 482 -- Zacharias v. Zurich Insurance Company 2013
+2013 ONCA 357 -- McLean v. Knox 2013
+2013 ONCA 67 -- R. v. Mernagh 2013
+2012 ONCA 537 -- Beldycki Estate v. Jaipargas 2012
+2011 ONCA 409 -- Barrington v. The Institute of Chartered Accountants of Ontario 2011
+2011 ONCA 338 -- Revios Canada Ltd. v. Creber 2011
+2011 ONCA 252 -- R. v. K.M. 2011
+2009 ONCA 844 -- R. v. W.E.J.M. 2009
+2009 ONCA 618 -- Loftus v. Security National Insurance Company 2009
+2009 ONCA 385 -- 6792341 Canada Inc. v. Dollar It Limited 2009
+2009 ONCA 2 -- Burley v. Burley 2009
+2007 ONCA 814 -- Mississaugas of Scugog Island First Nation v. National Automobile, Aerospace, Transportation and General Workers Union of Canada 2007
+2007 ONCA 334 -- Markson v. MBNA Canada Bank 2007
+2007 ONCA 36 -- R. v. Saddlemire 2007
+C45293 -- Hare v. Hare 2006
+C40720 -- R. v. Danvers 2005
+C39715, C39716 -- R. v. Hamilton 2004
+C38844 -- Casurina Limited Partnership v. Rio Algom Limited 2004
+C36894 -- Partners v. Lam 2002
+C36517 -- Transport North American Express Inc. v. New Solutions Financial Corporation 2002
+C34734 -- McBride Metal Fabricating Corporation v. H & W Sales Company Inc. 2002
+
+
+Total cases: 31
+2020 SCC 28 -- Fraser v. Canada (Attorney General) 2020
+2004 SCC 7 -- Transport North American Express Inc. v. New Solutions Financial Corp. 2004
+2002 SCC 43 -- Bank of America Canada v. Mutual Trust Co. 2002
+2002 SCC 18 -- Whiten v. Pilot Insurance Co. 2002
+[1992] 2 SCR 1103 -- Dickason v. University of Alberta 1992
+[1988] 1 SCR 749 -- Bell Canada v. Quebec (Commission de la Santé et de la Sécurité du Travail) 1988
+[1987] 1 SCR 32 -- Bronfman Trust v. The Queen 1987
+[1986] 2 SCR 56 -- The Queen v. Beauregard 1986
+[1985] 1 SCR 368 -- Montréal v. Arcade Amusements Inc. 1985
+[1984] 2 SCR 199 -- Phoenix Assurance v. Bird Construction 1984
+[1980] 1 SCR 914 -- Labatt Breweries of Canada Ltd. v. Attorney General of Canada 1979
+[1978] 2 SCR 229 -- Andrews v. Grand & Toy Alberta Ltd. 1978
+[1974] SCR 83 -- Assessor for Port Alberni v. MacMillan Bloedel et al. 1973
+[1969] SCR 719 -- H.A. Roberts Limited v. Minister of National Revenue 1969
+[1969] SCR 952 -- Kelly Douglas & Company Limited v. Mutual Leaseholds Limited 1969
+[1959] SCR 713 -- Frankel Corporation Ltd. v. Minister of National Revenue 1959
+[1949] SCR 530 -- Laane & Baltser v. Estonian S.S. Line 1949
+[1947] SCR 241 -- Barnes v. Saskatchewan Co-operative Wheat Producers Ltd. et al. 1947
+[1945] SCR 655 -- Gatineau Power Co. v. Crown Life Insurance Co. 1945
+[1945] SCR 669 -- The King v. Montreal Telegraph Co. 1945
+[1938] SCR 317 -- Wilson v. The King 1938
+[1938] SCR 100 -- Reference Re Alberta Statutes - The Bank Taxation Act; The Credit of Alberta Regulation Act; and the Accurate News and Information Act 1938
+[1926] SCR 349 -- Attorney General of Canada v. Halifax / Fairbanks v. City of Halifax 1926
+[1925] SCR 434 -- The King v. Eastern Terminal Elevator Co. 1925
+(1918) 57 SCR 585 -- Colonial Real Estate Co. v. La Communauté des Sœurs de la Charité de l'Hopital Général de Montréal 1918
+(1918) 57 SCR 229 -- Williams Machinery Co. v. Graham 1918
+(1907) 39 SCR 174 -- City of Halifax v. The McLaughlin Carriage Co. 1907
+(1902) 32 SCR 261 -- Brophy v. North American Life Assurance Co. 1902
+(1901) 31 SCR 136 -- Biggs v. Freehold Loan and Savings Co. 1901
+(1883) 8 SCR 408 -- Reed v. Mousseau 1883
+(1877) 1 SCR 604 -- Liverpool and London and Globe Ins. Co. v. Wyld and Darling 1877
+
+
+
+
+
+@"
+
+import os, sys
+
+sys.path.insert(0, '.')
+
+from dotenv import load_dotenv
+
+load_dotenv('.env')
+
+from embeddings import load_court_decisions
+
+df = load_court_decisions('SCC')
+
+mask1 = df['unofficial_text_en'].str.contains('one per.?cent', case=False, na=False, regex=True)
+
+mask2 = df['unofficial_text_en'].str.contains('OPCF|unidentified motorist|underinsured|automobile insurance|motor vehicle insurance|insurance', case=False, na=False, regex=True)
+
+results = df[mask1 & mask2].sort_values('document_date_en', ascending=False)
+
+print('Total cases:', len(results))
+
+for idx, row in results.iterrows():
+
+    print(row['citation_en'], '--', row['name_en'], str(row['document_date_en'])[:4])
+
+"@ | Out-File -FilePath "search_1pct_insurance.py" -Encoding utf8
+
+uv run python search_1pct_insurance.py
